@@ -1,0 +1,31 @@
+version 2: 
+
+models:
+  - name: fact_orders
+    description: "Incremental fact table for orders build from raw_orders"
+    meta:
+      owner: "Data Analytics Team"
+      owner_email: "dataskoolacademy@gmail.com"
+      domains: "sales"
+    
+    columns:
+      - name: order_id
+        description: "Surrogate key for the order"
+        tests:
+          - unique
+          - not_null
+      - name: order_date
+        description: "Date of the order"
+        tests:
+          - not_null
+      - name: customer_id
+        description: "Customer identifier"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: order_amount
+        description: "Order Value"
+        tests:
+          - not_null

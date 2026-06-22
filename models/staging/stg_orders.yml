@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Staging model for orders, sourced from raw_orders"
+    meta:
+      owner: "Data Analytics Team"
+      domains: "sales"
+    columns:
+      - name: order_id
+        description: "Order identified from the source table."
+      - name: order_date
+        description: "Order from the source table"
+      - name: customer_id
+        description: "Source customer id"
+      - name: order_amount
+        description: "Order amount from the source table."

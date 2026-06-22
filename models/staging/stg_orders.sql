@@ -1,0 +1,1 @@
+select "totalAmount" from "Order"

@@ -1,0 +1,25 @@
+[0m09:07:41  Running with dbt=1.11.11
+[0m09:07:41  Registered adapter: postgres=1.10.0
+[0m09:07:41  [[33mWARNING[0m]: Configuration paths exist in your dbt_project.yml file which do not apply to any resources.
+There are 1 unused configuration paths:
+- models.my_project.example
+[0m09:07:41  Found 8 models, 1 snapshot, 5 data tests, 478 macros
+[0m09:07:41  
+[0m09:07:41  Concurrency: 4 threads (target='dev')
+[0m09:07:41  
+[0m09:07:46  1 of 5 START test not_null_fact_orders_customer_id ............................. [RUN]
+[0m09:07:46  2 of 5 START test not_null_fact_orders_order_amount ............................ [RUN]
+[0m09:07:46  3 of 5 START test not_null_fact_orders_order_date .............................. [RUN]
+[0m09:07:46  4 of 5 START test not_null_fact_orders_order_id ................................ [RUN]
+[0m09:07:48  2 of 5 PASS not_null_fact_orders_order_amount .................................. [[32mPASS[0m in 1.97s]
+[0m09:07:48  5 of 5 START test unique_fact_orders_order_id .................................. [RUN]
+[0m09:07:48  1 of 5 PASS not_null_fact_orders_customer_id ................................... [[32mPASS[0m in 2.04s]
+[0m09:07:48  3 of 5 PASS not_null_fact_orders_order_date .................................... [[32mPASS[0m in 2.05s]
+[0m09:07:48  4 of 5 PASS not_null_fact_orders_order_id ...................................... [[32mPASS[0m in 2.15s]
+[0m09:07:49  5 of 5 PASS unique_fact_orders_order_id ........................................ [[32mPASS[0m in 1.94s]
+[0m09:07:51  
+[0m09:07:51  Finished running 5 data tests in 0 hours 0 minutes and 9.95 seconds (9.95s).
+[0m09:07:51  
+[0m09:07:51  [32mCompleted successfully[0m
+[0m09:07:51  
+[0m09:07:51  Done. PASS=5 WARN=0 ERROR=0 SKIP=0 NO-OP=0 TOTAL=5

@@ -1,0 +1,1 @@
+SELECT name, phone, email FROM "Customer" WHERE "totalOrders" < 5

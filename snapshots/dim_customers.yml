@@ -1,0 +1,28 @@
+version 2:
+
+snapshots:
+  - name: dim_customers
+    description: "SCD Snapshot of the customer from raw_customers"
+    meta:
+      owner: "Data Analytics Team"
+      owner_email: "dataskoolacademy@gmail.com"
+      domains: "sales"
+
+    columns:
+      - name: dbt_scd_id
+        description: "Unique identifier for each version of the customer record"
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        description: "Business key for the customer"
+        tests:
+          - not_null
+      - name: customer_name
+        description: "Full name of the customer"
+        tests:
+          - not_null
+      - name: city
+        description: "City where the customer resides"
+        tests:
+          - not_null
