@@ -9,7 +9,7 @@ echo "Project: demo_project"
 echo "=========================================="
 echo
 
-# Run dbt build (models + tests + snapshots)
+# Run dbt build (models + test + snapshots)
 dbt build
 
 echo
