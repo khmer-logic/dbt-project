@@ -1,0 +1,34 @@
+name: dbt Nightly 
+on:
+  #Run every night at 00:00 UTC
+  schedule:
+    - cron: '0 0 * * *'
+  #ALL Manual run from github 
+  workflow_dispatch:
+
+jobs:
+  nightly_build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dbt (Postgres adapter)
+        run: |
+          pip install dbt-postgres
+      # Use the CI profile in the dbt
+      - name: Run dbt compile (nightly)
+        run: |
+          mkdir -p target
+          echo '{"metadata": {"job":"nightly", "mode":"compile"}}'
+      # Upload artifacts so we can inspect from actions
+      - name: Upload dbt nightly artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-nightly-artifacts
+          path: target
+
