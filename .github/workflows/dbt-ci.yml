@@ -24,6 +24,16 @@ jobs:
 
       - name: Create dbt profiles.yml from secrets
         run: |
+          # Fail early with a clear message if any required secret is missing
+          missing=""
+          for v in DBT_HOST DBT_PORT DBT_USER DBT_PASSWORD DBT_DBNAME DBT_SCHEMA; do
+            if [ -z "${!v}" ]; then missing="$missing $v"; fi
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Missing required GitHub Secret(s):$missing"
+            echo "Add them under Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
           mkdir -p ~/.dbt
           cat > ~/.dbt/profiles.yml <<EOF
           my_project:
