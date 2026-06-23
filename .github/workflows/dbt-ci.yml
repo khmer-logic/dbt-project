@@ -49,6 +49,10 @@ jobs:
                 schema: "${DBT_SCHEMA}"
                 threads: 4
           EOF
+          echo "----- rendered profiles.yml (pass redacted) -----"
+          sed 's/pass:.*/pass: ***REDACTED***/' ~/.dbt/profiles.yml
+          echo "-------------------------------------------------"
+          echo "DBT_PORT length: ${#DBT_PORT}"
         env:
           DBT_HOST: ${{ secrets.DBT_HOST }}
           DBT_PORT: ${{ secrets.DBT_PORT }}
