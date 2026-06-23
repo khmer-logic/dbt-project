@@ -1,9 +1,10 @@
-name: dbt Nightly 
+name: dbt Nightly
+
 on:
-  #Run every night at 00:00 UTC
+  # Run every night at 00:00 UTC
   schedule:
     - cron: '0 0 * * *'
-  #ALL Manual run from github 
+  # Allow manual runs from the GitHub Actions tab
   workflow_dispatch:
 
 jobs:
@@ -13,22 +14,66 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Install dbt (Postgres adapter)
         run: |
           pip install dbt-postgres
-      # Use the CI profile in the dbt
-      - name: Run dbt compile (nightly)
+
+      - name: Create dbt profiles.yml from secrets
         run: |
-          mkdir -p target
-          echo '{"metadata": {"job":"nightly", "mode":"compile"}}'
-      # Upload artifacts so we can inspect from actions
-      - name: Upload dbt nightly artifacts
+          # Fail early with a clear message if any required secret is missing
+          missing=""
+          for v in DBT_HOST DBT_PORT DBT_USER DBT_PASSWORD DBT_DBNAME DBT_SCHEMA; do
+            if [ -z "${!v}" ]; then missing="$missing $v"; fi
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Missing required GitHub Secret(s):$missing"
+            echo "Add them under Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml <<EOF
+          my_project:
+            target: dev
+            outputs:
+              dev:
+                type: postgres
+                host: "${DBT_HOST}"
+                port: ${DBT_PORT}
+                user: "${DBT_USER}"
+                pass: "${DBT_PASSWORD}"
+                dbname: "${DBT_DBNAME}"
+                schema: "${DBT_SCHEMA}"
+                threads: 4
+          EOF
+          echo "----- rendered profiles.yml (pass redacted) -----"
+          sed 's/pass:.*/pass: ***REDACTED***/' ~/.dbt/profiles.yml
+          echo "-------------------------------------------------"
+        env:
+          DBT_HOST: ${{ secrets.DBT_HOST }}
+          DBT_PORT: ${{ secrets.DBT_PORT }}
+          DBT_USER: ${{ secrets.DBT_USER }}
+          DBT_PASSWORD: ${{ secrets.DBT_PASSWORD }}
+          DBT_DBNAME: ${{ secrets.DBT_DBNAME }}
+          DBT_SCHEMA: ${{ secrets.DBT_SCHEMA }}
+
+      - name: Run dbt build (nightly)
+        run: |
+          dbt --version
+          dbt debug
+          dbt build
+        working-directory: .
+
+      - name: Upload dbt nightly artifacts (logs + target)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dbt-nightly-artifacts
-          path: target
-
+          path: |
+            logs
+            target
